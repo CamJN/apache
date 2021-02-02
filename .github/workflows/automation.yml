@@ -28,7 +28,7 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
       - name: Scrape data
-        run: 'curl -sSL https://opensource.apple.com/source/apache/ | xmllint --html --xpath ''.//a[starts-with(@href,"apache")]/@href'' - | tr " " "\n" | sed -Ee ''s@href="apache-([^"]+)/?"@\1@g'' | sort -u | grep -vf <(git -C repo tag | sed -Ee ''s/v(.*)/^\1$/g'' ) | xargs -I{} curl -o ./data/apache-{}.tgz "https://opensource.apple.com/tarballs/apache/apache-{}.tar.gz"'
+        run: 'curl -sSL https://opensource.apple.com/source/apache/ | xmllint --html --xpath ''.//a[starts-with(@href,"apache")]/@href'' - | tr " " "\n" | sed -Ee ''s@href="apache-([^"/]+)/?"@\1@g'' | sort -u | grep -vf <(git -C repo tag | sed -Ee ''s/v(.*)/^\1$/g'' ) | xargs -I{} curl -o ./data/apache-{}.tgz "https://opensource.apple.com/tarballs/apache/apache-{}.tar.gz"'
       - name: loop and upload
         run: |
           for f in $(ls data/apache-* | sort -V); do
